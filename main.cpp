@@ -27,15 +27,19 @@ int main()
 
         while (c != cols) {
             if (r == pad + 1 && c == pad_sides + 1) {
+                    cout << string((cols - 2 - greeting.size()) / 2, ' ');
                     cout << greeting;
+                    cout << string((cols - 2 - greeting.size()) / 2, ' ');
                     c += greeting.size(); 
             }
             else {
-                    if(r == 0 || r == rows - 1 || c == 0 || c == cols - 1)
-                        cout << "*";
-                    else
-                        cout << " ";
-                        ++c;
+                if(r == 0 || r == rows - 1 || c == 0 || c == cols - 1) { 
+                     cout << "*";
+                    if(c == 0 && r != 0 && r != rows - 1 && r != pad + 1 && c != pad_sides + 1) {
+                        cout << string((cols - 2), ' ');
+                    }
+                }
+                ++c; 
             }
         }
         cout << endl;
@@ -43,3 +47,4 @@ int main()
 
     return 0;
 }
+
