@@ -31,9 +31,7 @@ int main() {
     for (double i = 0; i < amount_of_words; ++i) {
         for (double t = 0; t < firstdistinct.size(); ++t) {
             if (firstdistinct[t] != wordvector[i]) {
-                cout << firstdistinct[t] << wordvector[i]; 
-                ++count_to_check;
-                cout << " ";                    
+                ++count_to_check;                
             }
         }
         if (count_to_check == firstdistinct.size()) {
