@@ -31,10 +31,24 @@ int main(){
     vec_sz quartile = values.size() / 4;
 
     sort(values.begin(), values.end());
-
-    for(int t = values.size() - 1; t > quartile; --t) {
-        // a.push_back(values[t]);
-        cout << values[t];
+    cout << "Greatest quartile: ";
+    for(int t = quartile; t > 0; --t) {
+        cout << values[num_of_inputs - t] << ", ";
+    }
+    cout << endl;
+    cout << "Second greatest quartile: ";
+    for(int t = quartile; t > 0; --t) {
+        cout << values[num_of_inputs - t - quartile] << ", ";
+    }
+    cout << endl;
+    cout << "Second smallest quartile: ";
+    for(int t = quartile; t > 0; --t) {
+        cout << values[num_of_inputs - t - quartile * 2] << ", ";
+    }
+    cout << endl;
+    cout << "Smallest quartile: ";
+    for(int t = quartile; t > 0; --t) {
+        cout << values[num_of_inputs - t - quartile * 3] << ", ";
     }
     
     return 0;
