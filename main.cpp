@@ -7,45 +7,51 @@
 using std::cout; using std::string; using std::endl; using std::cin; 
 using std::setprecision; using std::streamsize; using std::vector; using std::sort;
 
-int main(){
-    cout << "Please enter your first name: ";
-    string name;
-    cin >> name;
-    cout << "Hello, " + name + "!" << endl;
+int main() {
+    vector<string> listofnames;
+    vector<double> gradeslist;
 
-    cout << "Please enter your midterm and final exam grades: ";
-    double midterm, final;
-    cin >> midterm >> final;
-
-    cout << "Enter all your homework grades, "
-         "followed by end-of-file: ";
-
-    double x;
-    vector<double> homework;
-
-    while (cin >> x) {
-        homework.push_back(x);
-    }
-
-    typedef vector<double>::size_type vec_sz;
-    vec_sz size = homework.size();
-
-    if (size == 0) {
-        cout << endl << "You must enter your grades.  "
-                        "Please try again." << endl;
+    int studentgrades;
+    cout << "How many students' grades do you want to enter?" << endl;
+    cin >> studentgrades;
+    if (studentgrades < 1) {
         return 1;
     }
 
-    sort(homework.begin(), homework.end());
+    for (int t = 0; t < studentgrades; ++t ) {
+        cout << "Please enter your first name: ";
+        string name;
+        cin >> name;
+        listofnames.push_back(name);
 
-    vec_sz mid = size / 2;
-    double median;
-    median = size % 2 == 0 ? (homework[mid] + homework[mid - 1]) / 2 : homework[mid];
-
-    streamsize prec = cout.precision();
-    cout << "Your final grade is " << setprecision(3)
-    << 0.2 * midterm + 0.4 * final + 0.4 * median
-    << setprecision(prec) << endl;
+        cout << "Please enter your midterm and final exam grades: ";
+        double midterm, final;
+        cin >> midterm >> final;
     
+
+        cout << "Enter all your homework grades, "
+            "followed by end-of-file: ";
+        double x;
+        vector<double> homework;
+        for (int i = 0; i < 6; ++i) {
+            cout << "Enter a homework grade: " << endl;
+            cin >> x;
+            homework.push_back(x);
+        }
+
+        typedef vector<double>::size_type vec_sz;
+        vec_sz size = homework.size();
+
+        sort(homework.begin(), homework.end());
+
+        double median = (homework[3] + homework[2]) / 2;
+
+        streamsize prec = cout.precision();
+        cout << "Your final grade is " << setprecision(3)
+        << 0.2 * midterm + 0.4 * final + 0.4 * median << endl;
+        gradeslist.push_back(0.2 * midterm + 0.4 * final + 0.4 * median);
+        setprecision(prec);
+
+    }
     return 0;
 }
