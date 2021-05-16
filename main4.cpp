@@ -1,37 +1,41 @@
-#include <iomanip>
-#include <ios>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iomanip>
 #include <stdexcept>
-using std::cin; using std::setprecision; using std::cout; using std::vector; 
-using std::string; using std::endl; using std::streamsize; using std::domain_error; 
+#include <ios>
+#include "grade.h"
+#include "Student_info.h"
+using std::cout; using std::vector; using std::endl; using std::max; using std::string;
+using std::sort; using std::streamsize; using std::setprecision; using std::domain_error; using std::cin;
 
-double grade(double midterm, double final, double homework) {
-    return 0.2 * midterm + 0.4 * final + 0.4 * homework;
-}
-// read last paragraph of 4.1.2
-double median(vector<double> vec)
+int main()
 {
-    typedef vector<double>::size_type vec_sz;
+    vector<Student_info> students;
+    Student_info record;
+    string::size_type maxlen = 0;
 
-    vec_sz size = vec.size();
-    if (size == 0) {
-        throw domain_error("median of an empty vector");
+    while (read(cin, record)) {
+        maxlen = max(maxlen, record.name.size());
+        students.push_back(record);
     }
 
-    sort(vec.begin(), vec.end());
+    sort(students.begin(), students.end(), compare);
 
-    vec_sz mid = size / 2;
-    return size % 2 == 0 ? (vec[mid] + vec[mid - 1]) / 2 : vec[mid];
-}
+    for (vector<Student_info>::size_type i = 0;
+        i != students.size(); ++i) {
 
-double grade(double midterm, double final, const vector<double>& hw)
-{
-    if (hw.size() == 0) {
-        throw domain_error("student has done no homework");
+        cout << students[i].name << string(maxlen + 1 - students[i].name.size(), ' ');
+
+        try {
+            double final_grade = grade(students[i]);
+            streamsize prec = cout.precision();
+            cout << setprecision(3) << final_grade << setprecision(prec);
+        } catch (domain_error e) {
+            cout << e.what();
+        }
+        cout << endl;
     }
-
-    return grade(midterm, final, median(hw));
+    return 0;
 }
