@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 using std::cout; using std::endl; using std::cin; using std::string;
-
+//2-0, 2-1, 2-2, 2-3, 2-4 done
 int main() 
 {
     string name;

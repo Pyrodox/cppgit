@@ -2,12 +2,12 @@
 
 using std::istream; using std::vector;
 
-bool compare(const Student_info& x, const Student_info& y)
+bool compare(const Student_info_details& x, const Student_info_details& y)
 {
     return x.name < y.name;
 }
 
-istream& read(istream& is, Student_info& s)
+istream& read(istream& is, Student_info_details& s)
 {
     is >> s.name >> s.midterm >> s.final;
 

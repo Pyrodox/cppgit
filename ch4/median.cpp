@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <stdexcept>
 #include <vector>
-#include "median.h"
 using std::domain_error; using std::sort; using std::vector;
 
 double median(vector<double> vec)
