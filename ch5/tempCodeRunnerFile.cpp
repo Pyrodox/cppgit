@@ -1,1 +1,0 @@
-cout << amntofstudents << endl;

@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <iterator>
 #include <exception>
 #include <string.h>
-using std::cout; using std::cin; using std::vector; using std::endl; using std::string; using std::iterator; using std::exception;
+using std::cout; using std::cin; using std::vector; 
+using std::endl; using std::string; using std::exception;
 
 int getNum(double &d, int &i, const char * type, string prompt)
 {
@@ -32,30 +32,26 @@ int getNum(double &d, int &i, const char * type, string prompt)
     return 0;
 }
 
-int setStudentInfo(vector<string> &namev, vector<double> &midv, vector<double> &finalv)
+int setStudentInfo(vector<string> &namev, double &mid, double &final)
 {
     cout << "What is your name?" << endl;
     string name;
     cin >> name;
     namev.push_back(name);
 
-    double midterm, final;
     int throwaway = 0;
-
-    getNum(midterm, throwaway, "double", "Enter your midterm grade: ");
-    midv.push_back(midterm);
-
+    getNum(mid, throwaway, "double", "Enter your midterm grade: ");
     getNum(final, throwaway, "double", "Enter your finals grade: ");
-    finalv.push_back(final);
 
     return 0;
 }
 
 double hwmed(vector<double> &hw, int &amt)
 {   
+    amt--;
     const int middle = amt / 2;
 
-    return (amt % 2 == 0) ? (hw[middle - 1] + hw[middle + 1]) / 2 : hw[middle];
+    return ((++amt) % 2 == 0) ? (hw[middle - 1] + hw[middle + 1]) / 2 : hw[middle];
 }
 
 double hwstorage(vector<double> &hws)
@@ -89,33 +85,41 @@ double finalgrade(double &mvec, double &fvec, double &hwmedian)
     return 0.2 * mvec + 0.4 * fvec + 0.4 * hwmedian;
 }
 
-int checkifFailedandRemove(vector<double> &gradesvec, vector<string> &nvec, int iter, int amnt)
+int checkifFailedandRemove(vector<double> &gradesvec, vector<string> &nvec, int &ind, int &amnt)
 {   
-    if (gradesvec[iter] < 60) {
-        nvec.erase(nvec.begin() + iter);
-        gradesvec.erase(gradesvec.begin() + iter);
+    if (gradesvec[ind] < 60) {
+        nvec.erase(nvec.begin() + ind);
+        gradesvec.erase(gradesvec.begin() + ind);
+        ind--;
         amnt--;
     }
 
-    return amnt;
+    return 0;
 }
 
 int main()
 {
     vector<string> namesvec;
-    vector<double> midtermsvec, finalsvec, hwvec, finalgradesvec;
+    vector<double> hwvec, finalgradesvec;
 
     int amntofstudents, actualamnt;
     double throwaway = 0;
     getNum(throwaway, amntofstudents, "int", "Enter how many students you want to enter: ");
    
     for (int i = 0; i < amntofstudents; i++) {
-        setStudentInfo(namesvec, midtermsvec, finalsvec);
+        double midtermgrade, finalsgrade;
+        setStudentInfo(namesvec, midtermgrade, finalsgrade);
+
         double hwmedian = hwstorage(hwvec);
-        double finalresult = finalgrade(midtermsvec[i], finalsvec[i], hwmedian);
-        finalgradesvec.push_back(finalresult);
-        actualamnt = checkifFailedandRemove(finalgradesvec, namesvec, i, amntofstudents);
         hwvec.clear();
+
+        double finalresult = finalgrade(midtermgrade, finalsgrade, hwmedian);
+        finalgradesvec.push_back(finalresult);
+    }
+
+    actualamnt = amntofstudents;
+    for (int i = 0; i < actualamnt; i++) {
+        checkifFailedandRemove(finalgradesvec, namesvec, i, actualamnt);
     }
 
     for (int i = 0; i < actualamnt; i++) {
