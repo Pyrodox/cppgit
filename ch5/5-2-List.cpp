@@ -3,14 +3,15 @@
 #include <string>
 #include <iterator>
 #include <exception>
-#include <string.h>
-using std::cout; using std::cin; using std::endl; using std::string; 
+#include <chrono>
+using std::cout; using std::cin; using std::endl; using std::string; using std::milli;
 using std::iterator; using std::exception; using std::list; using std::advance;
-
-void getI(int &i, const char * type, string prompt)
+//NOTE: TIMES ALWAYS VARY 
+//10 inputs: 13.807 ms, 1000 inputs: 2420.17 ms, 10000 inputs: 24157.4 ms
+void getI(int &i, string prompt)
 {
     while (true) {
-        cout << prompt << endl;
+        cout << prompt;
         string check;
         cin >> check;
 
@@ -24,12 +25,13 @@ void getI(int &i, const char * type, string prompt)
     }
 }
 
-void getD(double &d, const char * type, string prompt)
+void getD(double &d, string prompt)
 {
     while (true) {
-        cout << prompt << endl;
+        cout << prompt;
         string check;
         cin >> check;
+
         try {
             d = stod(check);
             break;
@@ -42,36 +44,33 @@ void getD(double &d, const char * type, string prompt)
 
 void setStudentInfo(list<string> &namelst, double &mid, double &final)
 {
-    cout << "What is your name?" << endl;
+    cout << "What is your name? ";
     string name;
     cin >> name;
     namelst.push_back(name);
+    cout << "\n";
 
-    getD(mid, "double", "Enter your midterm grade: ");
-    getD(final, "double", "Enter your finals grade: ");
+    getD(mid, "Enter your midterm grade: ");
+    getD(final, "Enter your finals grade: ");
+    cout << "\n";
 }
 
 double hwmed(list<double> &hw, int &amt)
 {   
-    amt--;
-    const int middle = amt / 2;
+    const int middle = --amt / 2;
 
-    auto lbegin1 = hw.begin(), lbegin2 = hw.begin(), lbegin3 = hw.begin();
+    auto lbegin1 = hw.begin(), lbegin2 = hw.begin();
 
     advance(lbegin1, middle);
-    advance(lbegin2, middle - 1);
-    advance(lbegin3, middle + 1);
-
-    ((++amt) % 2 == 0) ? cout << (*lbegin2 + *lbegin3) / 2 << endl : cout << *lbegin1 << endl;
-
-    return ((++amt) % 2 == 0) ? (*lbegin2 + *lbegin3) / 2 : *lbegin1;
+    advance(lbegin2, middle + 1);
+    
+    return ((++amt) % 2 == 0) ? (*lbegin1 + *lbegin2) / 2 : *lbegin1;
 }
 
-double hwstorage(list<double> &hws) //issue here
+double hwstorage(list<double> &hws)
 {
-    double throwawaydouble = 0;
     int hwamount;
-    getNum(throwawaydouble, hwamount, "int", "Enter the amount of homework you were assigned: ");
+    getI(hwamount, "Enter the amount of homework you were assigned: ");
    
     try {
         if (hwamount < 1) {
@@ -82,21 +81,13 @@ double hwstorage(list<double> &hws) //issue here
     }
 
     double hwinput;
-    int throwaway = 0;
     auto lbegin = hws.begin();
 
-    cout << hwamount << endl;
-
     for (int i = 0; i < hwamount; i++) {
-        getNum(hwinput, throwaway, "double", "Enter a homework grade");
-        *lbegin = hwinput;
-        lbegin++;
+        getD(hwinput, "Enter a homework grade: ");
+        hws.push_back(hwinput);
     }
-
-    for (double values : hws) {
-        cout << "a" << endl;
-        cout << values << endl;
-    }
+    cout << "\n";
 
     return hwmed(hws, hwamount);
 }
@@ -106,7 +97,7 @@ double finalgrade(double &mlst, double &flst, double &hwmedian)
     return 0.2 * mlst + 0.4 * flst + 0.4 * hwmedian;
 }
 
-int checkifFailedandRemove(list<double> &gradeslst, list<string> &nlst, int &ind, int &amnt) //issue in function
+void checkifFailedandRemove(list<double> &gradeslst, list<string> &nlst, int &ind, int &amnt)
 {   
     auto lbegin1 = gradeslst.begin();
     auto lbegin2 = nlst.begin();
@@ -118,8 +109,6 @@ int checkifFailedandRemove(list<double> &gradeslst, list<string> &nlst, int &ind
         ind--;
         amnt--;
     }
-
-    return 0;
 }
 
 int main()
@@ -128,9 +117,11 @@ int main()
     list<double> hwlst, finalgradeslst;
 
     int amntofstudents, actualamnt;
-    double throwaway = 0;
-    getNum(throwaway, amntofstudents, "int", "Enter how many students you want to enter: ");
-   
+    getI(amntofstudents, "Enter how many students you want to enter: ");
+    cout << "\n";
+
+    auto start = std::chrono::steady_clock::now();
+
     for (int i = 0; i < amntofstudents; i++) {
         double midtermgrade, finalsgrade;
         setStudentInfo(nameslst, midtermgrade, finalsgrade);
@@ -144,18 +135,21 @@ int main()
     
     actualamnt = amntofstudents;
     for (int i = 0; i < actualamnt; i++) {
-        checkifFailedandRemove (finalgradeslst, nameslst, i, actualamnt);
+        checkifFailedandRemove(finalgradeslst, nameslst, i, actualamnt);
     }
-    cout << "actual amnt == " << actualamnt << endl;
+
     auto lbegin1 = nameslst.begin();
     auto lbegin2 = finalgradeslst.begin();
-    cout << *lbegin1 << endl;
-    cout << *lbegin2 << endl;
     for (int i = 0; i < actualamnt; i++) {
         cout << *lbegin1 << ": " << *lbegin2 << endl;
         lbegin1++;
         lbegin2++;
     }
+
+    auto end = std::chrono::steady_clock::now();
+    auto diff = end - start;
+
+    cout << std::chrono::duration <double, milli> (diff).count() << " ms";
 
     return 0;
 }

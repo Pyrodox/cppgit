@@ -3,9 +3,11 @@
 #include <string>
 #include <exception>
 #include <string.h>
-using std::cout; using std::cin; using std::vector; 
+#include <chrono>
+using std::cout; using std::cin; using std::vector; using std::milli;
 using std::endl; using std::string; using std::exception;
-
+//NOTE: TIMES ALWAYS VARY 
+//10 inputs: 33.789 ms, 1000 inputs: 2973.87 ms, 10000 inputs: 31337.8 ms
 int getNum(double &d, int &i, const char * type, string prompt)
 {
     while (true) {
@@ -38,20 +40,21 @@ int setStudentInfo(vector<string> &namev, double &mid, double &final)
     string name;
     cin >> name;
     namev.push_back(name);
+    cout << "\n";
 
     int throwaway = 0;
     getNum(mid, throwaway, "double", "Enter your midterm grade: ");
     getNum(final, throwaway, "double", "Enter your finals grade: ");
+    cout << "\n";
 
     return 0;
 }
 
 double hwmed(vector<double> &hw, int &amt)
 {   
-    amt--;
-    const int middle = amt / 2;
+    const int middle = --amt / 2;
 
-    return ((++amt) % 2 == 0) ? (hw[middle - 1] + hw[middle + 1]) / 2 : hw[middle];
+    return ((++amt) % 2 == 0) ? (hw[middle] + hw[middle + 1]) / 2 : hw[middle];
 }
 
 double hwstorage(vector<double> &hws)
@@ -59,7 +62,7 @@ double hwstorage(vector<double> &hws)
     double throwawaydouble = 0;
     int hwamount;
     getNum(throwawaydouble, hwamount, "int", "Enter the amount of homework you were assigned: ");
-   
+
     try {
         if (hwamount < 1) {
             throw hwamount;
@@ -76,6 +79,7 @@ double hwstorage(vector<double> &hws)
         getNum(hwinput, throwaway, "double", "Enter a homework grade");
         hws[i] = hwinput;
     }
+    cout << "\n";
 
     return hwmed(hws, hwamount);
 }
@@ -105,7 +109,10 @@ int main()
     int amntofstudents, actualamnt;
     double throwaway = 0;
     getNum(throwaway, amntofstudents, "int", "Enter how many students you want to enter: ");
-   
+    cout << "\n";
+    
+    auto start = std::chrono::steady_clock::now();
+
     for (int i = 0; i < amntofstudents; i++) {
         double midtermgrade, finalsgrade;
         setStudentInfo(namesvec, midtermgrade, finalsgrade);
@@ -125,6 +132,11 @@ int main()
     for (int i = 0; i < actualamnt; i++) {
         cout << namesvec[i] << ": " << finalgradesvec[i] << endl; 
     }
+
+    auto end = std::chrono::steady_clock::now();
+    auto diff = end - start;
+
+    cout << std::chrono::duration <double, milli> (diff).count() << " ms";
 
     return 0;
 }
