@@ -51,7 +51,7 @@ vecstr hcat(const vecstr& left, const vecstr& right)
         if (i != left.size())
             s = left[i++];
 
-        //s += string(width1 - s.size(), ' ');
+        s += string(width1 - s.size(), ' ');
 
         if (j != right.size())
             s += right[j++];
@@ -97,35 +97,21 @@ int main()
     topvec.insert(topvec.end(), newvec.begin(), newvec.begin() + newvecsz / 2);
     botvec.insert(botvec.end(), newvec.begin() + newvecsz / 2, newvec.end());
     
-    const vecstr vervec = vcat(topvec, botvec);
+    vecstr vervec = vcat(topvec, botvec);
     for (string line : vervec) {
         cout << line << endl;
+    }
+
+    vervec = vcat(wordvec, frame(wordvec));
+    for (string line: vervec) {
+      cout << line << endl;
     }
 
     cout << endl;
 
     //horizontal cocatenation
 
-    const int widthtodiv = newvec[0].length() / 2;
-    vecstr leftvec, rightvec;
-    for (string line : newvec) {
-        leftvec.push_back(line.substr(0, widthtodiv));
-        rightvec.push_back(line.substr(widthtodiv, widthtodiv));
-    }
-
-    //test
-    for (string line : leftvec) {
-        cout << line << endl;
-    }
-
-    cout << endl;
-
-    for (string line : rightvec) {
-        cout << line << endl;
-    }
-    //test
-
-    const vecstr horvec = hcat(leftvec, rightvec);
+    const vecstr horvec = hcat(wordvec, frame(wordvec));
     for (string line : horvec) {
         cout << line << endl;
     }
