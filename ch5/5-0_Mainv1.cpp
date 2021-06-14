@@ -41,6 +41,7 @@ int main()
     while (read(cin, record)) {
         maxlen = max(maxlen, record.name.size());
         students.push_back(record);
+        cout << "bruh" << endl;
     }
 
     sort(students.begin(), students.end(), compare);
@@ -70,7 +71,7 @@ int main()
         cout << fail[i].name << string(maxlen + 1 - fail[i].name.size(), ' ');
 
         try {
-            record3.final_grade = grade(students[i]);
+            record3.final_grade = grade(fail[i]);
             streamsize prec = cout.precision();
             cout << setprecision(3) << record3.final_grade << setprecision(prec);
         } catch (domain_error e) {
