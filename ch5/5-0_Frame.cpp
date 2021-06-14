@@ -102,6 +102,8 @@ int main()
         cout << line << endl;
     }
 
+    cout << "\n";
+
     vervec = vcat(wordvec, frame(wordvec));
     for (string line: vervec) {
       cout << line << endl;
