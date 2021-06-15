@@ -1,12 +1,26 @@
 #include <iostream>
+#include <typeinfo>
 #include <list>
 #include <string>
 #include <iterator>
 #include <exception>
 #include <vector>
-#include <string.h>
 using std::cout; using std::cin; using std::endl; using std::string; using std::vector;
 using std::iterator; using std::exception; using std::list; using std::advance;
+
+/*typedef list<double> overloadlv;
+typedef list<string> overloadlv2;
+
+void typedefdec(string choice)
+{
+    if (choice.compare("vector") == 0) {
+        typedef vector<double> overloadlv;
+        typedef vector<string> overloadlv2;
+    }
+    else {
+        cout << endl;
+    }
+}*/
 
 void getI(int &i, string prompt)
 {
@@ -55,12 +69,12 @@ void setStudentInfo(list<string> &namelst, double &mid, double &final)
     cout << "\n";
 }
 
-void setStudentInfo(vector<string> &namev, double &mid, double &final)
+void setStudentInfo(vector<string> &namelst, double &mid, double &final)
 {
-    cout << "What is your name?" << endl;
+    cout << "What is your name? ";
     string name;
     cin >> name;
-    namev.push_back(name);
+    namelst.push_back(name);
     cout << "\n";
 
     getD(mid, "Enter your midterm grade: ");
@@ -84,7 +98,12 @@ double hwmed(vector<double> &hw, int &amt)
 {   
     const int middle = --amt / 2;
 
-    return ((++amt) % 2 == 0) ? (hw[middle] + hw[middle + 1]) / 2 : hw[middle];
+    auto lbegin1 = hw.begin(), lbegin2 = hw.begin();
+
+    advance(lbegin1, middle);
+    advance(lbegin2, middle + 1);
+    
+    return ((++amt) % 2 == 0) ? (*lbegin1 + *lbegin2) / 2 : *lbegin1;
 }
 
 double hwstorage(list<double> &hws)
@@ -114,10 +133,9 @@ double hwstorage(list<double> &hws)
 
 double hwstorage(vector<double> &hws)
 {
-    
     int hwamount;
     getI(hwamount, "Enter the amount of homework you were assigned: ");
-
+   
     try {
         if (hwamount < 1) {
             throw hwamount;
@@ -126,12 +144,12 @@ double hwstorage(vector<double> &hws)
         cout << "Exception: " << ex << " entered. Please enter at least one homework assignment";
     }
 
-    hws.reserve(hwamount);
     double hwinput;
+    auto lbegin = hws.begin();
 
     for (int i = 0; i < hwamount; i++) {
-        getD(hwinput, "Enter a homework grade");
-        hws[i] = hwinput;
+        getD(hwinput, "Enter a homework grade: ");
+        hws.push_back(hwinput);
     }
     cout << "\n";
 
@@ -157,83 +175,95 @@ void checkifFailedandRemove(list<double> &gradeslst, list<string> &nlst, int &in
     }
 }
 
-void checkifFailedandRemove(vector<double> &gradesvec, vector<string> &nvec, int &ind, int &amnt)
+void checkifFailedandRemove(vector<double> &gradeslst, vector<string> &nlst, int &ind, int &amnt)
 {   
-    if (gradesvec[ind] < 60) {
-        nvec.erase(nvec.begin() + ind);
-        gradesvec.erase(gradesvec.begin() + ind);
+    auto lbegin1 = gradeslst.begin();
+    auto lbegin2 = nlst.begin();
+    advance(lbegin1, ind);
+    advance(lbegin2, ind);
+    if (*lbegin1 < 60) {
+        nlst.erase(lbegin2);
+        gradeslst.erase(lbegin1);
         ind--;
         amnt--;
     }
 }
 
-int main()
+void studentinfo(int &amnt, string &choice)
 {
-    typedef list<double> dlist;
-    typedef vector<double> dvec; //wth is the point of these...
+    if (choice.compare("vector") == 0) {
+        typedef vector<string> overloadlvstr;
+        typedef vector<double> overloadlvdble;
+        overloadlvstr nameslst;
+        overloadlvdble hwlst, finalgradeslst;
 
-    int amntofstudents, actualamnt;
-    getI(amntofstudents, "Enter how many students you want to enter: ");
-    cout << "\n";
+        for (int i = 0; i < amnt; i++) {
+                double midtermgrade, finalsgrade;
+                setStudentInfo(nameslst, midtermgrade, finalsgrade);
 
-    cout << "vector or list? (default is list, which is faster): ";
-    char * vecorlst;
-    cin >> vecorlst;
-    cout << "\n";
+                double hwmedian = hwstorage(hwlst);
+                hwlst.clear();
 
-    if (strcmp(vecorlst, "vector")) {
-        vector<string> namesvec;
-        dvec hwvec, finalgradesvec;
-
-        for (int i = 0; i < amntofstudents; i++) {
-            double midtermgrade, finalsgrade;
-            setStudentInfo(namesvec, midtermgrade, finalsgrade);
-
-            double hwmedian = hwstorage(hwvec);
-            hwvec.clear();
-
-            double finalresult = finalgrade(midtermgrade, finalsgrade, hwmedian);
-            finalgradesvec.push_back(finalresult);
+                double finalresult = finalgrade(midtermgrade, finalsgrade, hwmedian);
+                finalgradeslst.push_back(finalresult);
         }
-
-        actualamnt = amntofstudents;
-        for (int i = 0; i < actualamnt; i++) {
-            checkifFailedandRemove(finalgradesvec, namesvec, i, actualamnt);
-        }
-
-        for (int i = 0; i < actualamnt; i++) {
-            cout << namesvec[i] << ": " << finalgradesvec[i] << endl; 
-        }
-    }
-
-    else {
-        list<string> nameslst;
-        dlist hwlst, finalgradeslst;
-
-        for (int i = 0; i < amntofstudents; i++) {
-            double midtermgrade, finalsgrade;
-            setStudentInfo(nameslst, midtermgrade, finalsgrade);
-
-            double hwmedian = hwstorage(hwlst);
-            hwlst.clear();
-
-            double finalresult = finalgrade(midtermgrade, finalsgrade, hwmedian);
-            finalgradeslst.push_back(finalresult);
-        }
-        
-        actualamnt = amntofstudents;
+            
+            int actualamnt = amnt;
         for (int i = 0; i < actualamnt; i++) {
             checkifFailedandRemove(finalgradeslst, nameslst, i, actualamnt);
         }
 
-        auto lbegin1 = nameslst.begin();
-        auto lbegin2 = finalgradeslst.begin();
+            auto lbegin1 = nameslst.begin();
+            auto lbegin2 = finalgradeslst.begin();
         for (int i = 0; i < actualamnt; i++) {
             cout << *lbegin1 << ": " << *lbegin2 << endl;
             lbegin1++;
             lbegin2++;
         }
     }
+    else {
+        typedef list<string> overloadlvstr;
+        typedef list<double> overloadlvdble;
+        overloadlvstr nameslst;
+        overloadlvdble hwlst, finalgradeslst;
+
+        for (int i = 0; i < amnt; i++) {
+                double midtermgrade, finalsgrade;
+                setStudentInfo(nameslst, midtermgrade, finalsgrade);
+
+                double hwmedian = hwstorage(hwlst);
+                hwlst.clear();
+
+                double finalresult = finalgrade(midtermgrade, finalsgrade, hwmedian);
+                finalgradeslst.push_back(finalresult);
+        }
+            
+            int actualamnt = amnt;
+        for (int i = 0; i < actualamnt; i++) {
+            checkifFailedandRemove(finalgradeslst, nameslst, i, actualamnt);
+        }
+
+            auto lbegin1 = nameslst.begin();
+            auto lbegin2 = finalgradeslst.begin();
+        for (int i = 0; i < actualamnt; i++) {
+            cout << *lbegin1 << ": " << *lbegin2 << endl;
+            lbegin1++;
+            lbegin2++;
+        }
+    }
+}
+
+int main()
+{
+    int amntofstudents;
+    getI(amntofstudents, "Enter how many students you want to enter: ");
+    cout << "\n";
+
+    cout << "vector or list? (default is list): ";
+    string vecorlst;
+    cin >> vecorlst;
+
+    studentinfo(amntofstudents, vecorlst);
 
     return 0;
 }
