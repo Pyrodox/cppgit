@@ -43,7 +43,6 @@ int main()
     while (read(cin, record)) {
         maxlen = max(maxlen, record.name.size());
         students.push_back(record);
-        cout << "bruh" << endl;
     }
 
     students.sort(compare);

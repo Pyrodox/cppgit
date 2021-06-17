@@ -4,16 +4,7 @@
 #include <string>
 using std::cin; using std::setprecision; using std::cout; 
 using std::string; using std::endl; using std::streamsize;
-//3-0 done.
-/* 3-1 Proof in Writing:
-    The definition of a median is the value in the middle of a set of numbers. 
-    Since we do not know how many numbers are left in the set of numbers, then that means
-    we don't know how many values we've read and/or don't know the amount of numbers in the entire set.
-    To be cautious, we must not get rid of any value that we've already read since that number could actually
-    be the median (remember, we don't know how many values we've read and/or the amount of numbers in the set)
-    or it could be used to average the median. Therefore, in a universal case in which this written proof
-    should be applied to a median set of all real numbers, we must not get rid of any values that we've already read.*/
-      
+//3-6: I forgot what it did in this case, since I am answering the "what does your..." right now after editing the program.
 int main() {
     double midterm, final;  
     string name;

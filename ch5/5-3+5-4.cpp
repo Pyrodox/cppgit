@@ -8,19 +8,11 @@
 using std::cout; using std::cin; using std::endl; using std::string; using std::vector;
 using std::iterator; using std::exception; using std::list; using std::advance;
 
-/*typedef list<double> overloadlv;
-typedef list<string> overloadlv2;
-
-void typedefdec(string choice)
+struct Studentstats
 {
-    if (choice.compare("vector") == 0) {
-        typedef vector<double> overloadlv;
-        typedef vector<string> overloadlv2;
-    }
-    else {
-        cout << endl;
-    }
-}*/
+    string name;
+    double midterm, final, hwmedian, finalgrade;
+};
 
 void getI(int &i, string prompt)
 {

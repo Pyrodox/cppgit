@@ -6,7 +6,7 @@
 #include <vector>
 using std::cin; using std::sort; using std::cout; using std::streamsize; 
 using std::endl; using std::string; using std::setprecision; using std::vector;
-//did 3-0, 3-5, 3-6 (fixed number of homework grades and breaks if no final or midterm grade entered, or if negative numbers entered.)
+//For 3-5, I decided to basically rewrite the original median program to keep two vectors in sync.
 int main()
 {   
     vector<string> students;
@@ -47,7 +47,7 @@ int main()
         }    
         sort(homework.begin(), homework.end());
             
-        double median;    
+        double median;
         median = size % 2 == 0 ? (homework[mid] + homework[mid-1]) / 2 : homework[mid];
 
         streamsize prec = cout.precision();    
@@ -56,5 +56,6 @@ int main()
         final_grades.push_back(0.2 * midterm + 0.4 * final + 0.4 * median);
         setprecision(prec);    
     }
+
     return 0;
 }
