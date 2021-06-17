@@ -142,8 +142,6 @@ int main()
             students.push_back(record);
         }
 
-        infolst fail = extract_fails(students);
-
         printgrades(maxlen, students);
     }
 
