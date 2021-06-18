@@ -77,6 +77,10 @@ vecstr center(const vecstr &centervec)
 
 int main()
 {
+    //The width function's for loop will just cancel when initiated since v is an empty vector.
+    vector<string> v;
+    frame(v);
+
     cout << "How many words do you want to frame?: ";
     int amnt;
     cin >> amnt;
