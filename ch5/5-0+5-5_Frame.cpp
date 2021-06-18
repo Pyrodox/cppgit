@@ -60,6 +60,20 @@ vecstr hcat(const vecstr& left, const vecstr& right)
     }
     return ret;
 }
+//The property of a picture that could use the center well would have words that are around the same size, and this can be verified by eyeballing.
+vecstr center(const vecstr &centervec)
+{
+    int maxlen = width(centervec);
+
+    vecstr newcentervec;
+    int secondspaces;
+    for (string i : centervec) {
+        secondspaces = maxlen - i.size() - ((maxlen - i.size()) / 2);
+        newcentervec.push_back("* " + string((maxlen - i.size()) / 2, ' ') + i + string(secondspaces, ' ') + " *");
+    }
+
+    return newcentervec;
+}
 
 int main()
 {
@@ -72,8 +86,6 @@ int main()
         return 1;
     }
 
-    //frame
-
     vecstr wordvec;
     string word;
     for (int i = 0; i < amnt; i++) {
@@ -83,6 +95,8 @@ int main()
         cout << "\n";
     }
 
+    cout << "frame\n" << endl;
+
     const vecstr newvec = frame(wordvec);
     for (string line : newvec) {
         cout << line << endl;
@@ -90,7 +104,7 @@ int main()
 
     cout << endl;
 
-    //vertical cocatenation
+    cout << "vertical cocatenation frame number 2\n" << endl;
 
     const int newvecsz = newvec.size();
     vecstr topvec, botvec;
@@ -104,6 +118,8 @@ int main()
 
     cout << "\n";
 
+    cout << "vertical cocatenation\n" << endl;
+
     vervec = vcat(wordvec, frame(wordvec));
     for (string line: vervec) {
       cout << line << endl;
@@ -111,10 +127,17 @@ int main()
 
     cout << endl;
 
-    //horizontal cocatenation
+    cout << "horizontal cocatentation\n" << endl;
 
     const vecstr horvec = hcat(wordvec, frame(wordvec));
     for (string line : horvec) {
+        cout << line << endl;
+    }
+
+    cout << "center\n" << endl;
+
+    const vecstr cenvec = center(wordvec);
+    for (string line : cenvec) {
         cout << line << endl;
     }
 
