@@ -44,8 +44,11 @@ vecstr hcat(const vecstr& left, const vecstr& right)
     string::size_type width1 = width(left) + 1;
 
     vecstr::size_type i = 0, j = 0;
-
-    while (i != left.size() || j != right.size()) {
+    
+    //5-8 Prediction: if s was defined outside of the while loop, then the ret vector would be the same until the left vector reaches it's final size, 
+    //and then the spaces and right vector bottom parts of ret would be much larger since s isn't reset.
+    //Ok so it threw a length error, which means I was partly right since the bottom parts became "much larger", so an error was called.
+    while (i != left.size() || j != right.size()) { 
         string s;
 
         if (i != left.size())
@@ -77,9 +80,18 @@ vecstr center(const vecstr &centervec)
 
 int main()
 {
-    //The width function's for loop will just cancel when initiated since v is an empty vector.
+    //The frame function calls the width function, but the width function's for loop will just cancel when initiated since v is an empty vector. 
+    //Since v is an empty vector, the frame function's for loop will not add anything to vector ret, and printing ret out will result in nothing.
     vector<string> v;
-    frame(v);
+    auto ret = frame(v);
+
+    //testing my prediction
+    for (auto line : ret) {
+        cout << line << endl;
+    }
+    //It seems that I was incorrect.
+    //Looking back at it now, I understand why I was wrong: I forgot to consider the borders that were always added to the ret vector no matter what.
+    //Second time running; it should print out just the border parts frame(v). Correct.
 
     cout << "How many words do you want to frame?: ";
     int amnt;
