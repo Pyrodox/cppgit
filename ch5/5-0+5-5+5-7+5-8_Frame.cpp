@@ -80,7 +80,7 @@ vecstr center(const vecstr &centervec)
 
 int main()
 {
-    //The frame function calls the width function, but the width function's for loop will just cancel when initiated since v is an empty vector. 
+    //5-7 Prediction: The frame function calls the width function, but the width function's for loop will just cancel when initiated since v is an empty vector. 
     //Since v is an empty vector, the frame function's for loop will not add anything to vector ret, and printing ret out will result in nothing.
     vector<string> v;
     auto ret = frame(v);
