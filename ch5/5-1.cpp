@@ -1,8 +1,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <iterator>
-using std::cout; using std::endl; using std::cin; using std::string; using std::vector; using std::iterator;
+using std::cout; using std::endl; using std::cin; using std::string; using std::vector; using std::sort; using std::iterator;
+
+bool compare(string a, string b)
+{
+    return a < b;
+}
 
 int main()
 {
@@ -29,19 +35,17 @@ int main()
         }
         phrasesvec.push_back(word2);
 
-        //amntwords - 1, 3
-        for (int e = 0; e < 3; e++) { //each phrase rotation
-            word2 = ""; 
-             //amntwords, 4
-             //1 needs to constantly change
-            for (int a = e + 1; a < 4; a++) { //cocatenating the words: a and o loops
+        for (int e = 0; e < amntwords - 1; e++) { //each phrase rotation
+            word2 = "";
+            for (int a = e + 1; a < amntwords; a++) {
                 word2 += words[a] + " ";
             }
-            //o < x must also constantly change
-            for (int o = 0; o < e + 1; o++) { //help lol
+
+            word2 += "&";
+
+            for (int o = 0; o < e + 1; o++) {
                 word2 += words[o] + " ";
             }
-            
 
             phrasesvec.push_back(word2);
         }
@@ -49,7 +53,41 @@ int main()
         words.clear();
     }
 
+    sort(phrasesvec.begin(), phrasesvec.end(), compare);
+
+    vector<int> separatorvec, beginspacesvec;
+    vector<string> finalphrases, finalphrases_spaces;
+    int separator, maxlen = 0;
+    string substr1, substr2, wholestr = "";
     for (auto line : phrasesvec) {
+        if (line.find("&") < line.length()) {
+            separator = line.find("&");
+            int secondsep = line.size() - separator;
+            substr1 = line.substr(separator + 1, secondsep - 2);
+            wholestr += substr1 + string(5, ' ');
+            substr2 = line.substr(0, separator - 1);
+            wholestr += substr2;
+
+            beginspacesvec.push_back(substr1.size());
+
+            if (substr1.size() > maxlen) {
+                maxlen = substr1.size();
+            }
+
+            finalphrases.push_back(wholestr);
+        }
+        else {
+            finalphrases.push_back(string(5, ' ') + line);
+            beginspacesvec.push_back(0);
+        }
+        wholestr = "";
+    }
+
+    for (int i = 0; i < finalphrases.size(); i++) {
+        finalphrases_spaces.push_back(string(maxlen - beginspacesvec[i], ' ') + finalphrases[i]);
+    }
+
+    for (auto line : finalphrases_spaces) {
         cout << line << endl;
     }
 
