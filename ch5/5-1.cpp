@@ -11,7 +11,7 @@ bool compare(string a, string b)
     return a < b;
 }
 
-list<string> readwords(const int amntphrases, const int amntwords, list<string> &phrases)
+list<string> readwords(const int amntwords, list<string> &phrases)
 {
     string word;
     vector<string> words;
@@ -99,7 +99,7 @@ int main()
         cin >> amntwords;
         cout << endl;
 
-        readwords(amntphrases, amntwords, phrases);
+        readwords(amntwords, phrases);
     }
 
     phrases.sort(compare);
