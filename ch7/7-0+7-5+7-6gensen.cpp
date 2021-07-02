@@ -1,0 +1,158 @@
+#include <map>
+#include <iostream>
+#include <string>
+#include <iterator>
+#include <algorithm>
+#include <cstdlib>
+#include <vector>
+using std::map; using std::cout; using std::endl; using std::rand; using std::string;
+using std::iterator; using std::istream; using std::logic_error; using std::pair;
+using std::cin; using std::domain_error; using std::advance; using std::vector;
+
+typedef vector<string> Rule;
+typedef vector<Rule> Rule_collection;
+typedef map<string, Rule_collection> Grammar;
+
+bool space(char c)
+{
+    return isspace(c);
+}
+
+bool not_space(char c)
+{
+    return !isspace(c);
+}
+
+vector<string> split(const string& str)
+{
+    typedef string::const_iterator iter;
+    vector<string> ret;
+    iter i = str.begin();
+    while (i != str.end()) {
+        i = find_if(i, str.end(), not_space);
+
+        iter j = find_if(i, str.end(), space);
+
+        if (i != str.end()) {
+            ret.push_back(string(i, j));
+        }
+
+        i = j;
+    }
+
+    return ret;
+}
+
+bool bracketed(const string& s)
+{
+    return s.size() > 1 && s[0] == '<' && s[s.size() - 1] == '>';
+}
+
+int nrand(int n)
+{    
+    if (n <= 0 || n > RAND_MAX) {
+        throw domain_error("Argument to nrand is out of range");    
+    }
+
+    const int bucket_size = RAND_MAX / n;    
+    int r;    
+    do {
+        r = rand() / bucket_size;
+    }    
+    while (r >= n);
+
+    return r;
+}
+
+void gen_aux2(const Grammar& g, const string& word, vector<string>& ret, vector<pair<const string, Rule_collection> >& rulelst)
+{    
+    if (!bracketed(word)) {        
+        ret.push_back(word);    
+    }
+    else {        
+        Grammar::const_iterator it = g.find(word);        
+        if (it == g.end()) {         
+            throw logic_error("empty rule");
+        }        
+
+        rulelst.push_back(*it);
+
+        const Rule_collection& c = it->second;        
+        Rule_collection::const_iterator it2 = c.begin();
+        advance(it, nrand(c.size()));
+        const Rule& r = *it2;  
+        
+        for (Rule::const_iterator i = r.begin(); i != r.end(); ++i) {            
+            gen_aux(g, *i, ret, rulelst);
+        }    
+    }
+}
+
+void gen_aux(const Grammar& g, const string& word, vector<string>& ret, vector<pair<const string, Rule_collection> >& rulelst)
+{    
+    if (!bracketed(word)) {        
+        ret.push_back(word);    
+    }
+    else {        
+        Grammar::const_iterator it = g.find(word);        
+        if (it == g.end()) {         
+            throw logic_error("empty rule");
+        }
+
+        rulelst.push_back(*it);        
+       
+        const Rule_collection& c = it->second;        
+        Rule_collection::const_iterator it2 = c.begin();
+        advance(it, nrand(c.size()));
+        const Rule& r = *it2;  
+        
+        for (Rule::const_iterator i = r.begin(); i != r.end(); ++i) {            
+            gen_aux2(g, *i, ret, rulelst);
+        }    
+    }
+}
+
+vector<string> gen_sentence(const Grammar& g)
+{    
+    vector<string> ret;
+    vector<pair<const std::string, Rule_collection> > rulelst;
+    gen_aux(g, "<sentence>", ret, rulelst);    
+
+    return ret;
+}
+
+Grammar read_grammar(istream& in)
+{
+    Grammar ret;
+    string line;
+
+    while (getline(in, line)) {
+        vector<string> entry = split(line);
+
+        if (!entry.empty()) {
+            ret[*entry.begin()].push_back(Rule(++entry.begin(), entry.end()));
+        }
+    }
+
+    return ret;
+}
+
+int main()
+{    
+    vector<string> sentence = gen_sentence(read_grammar(cin));    
+        
+    vector<string>::const_iterator it = sentence.begin();   
+    if (!sentence.empty()) {
+        cout << *it;        
+        ++it;    
+    }    
+         
+    while (it != sentence.end()) {        
+        cout << " " << *it;        
+        ++it;    
+    }    
+    
+    cout << endl;    
+    
+    return 0;
+}
