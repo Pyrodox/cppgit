@@ -49,17 +49,32 @@ bool bracketed(const string& s)
 }
 
 int nrand(int n)
-{    
-    if (n <= 0 || n > RAND_MAX) {
+{   
+    if (n < 0) {
         throw domain_error("Argument to nrand is out of range");    
     }
 
-    const int bucket_size = RAND_MAX / n;    
-    int r;    
-    do {
-        r = rand() / bucket_size;
-    }    
-    while (r >= n);
+    int bucket_size, r, randmulti;
+    if (n <= RAND_MAX) {
+        bucket_size = RAND_MAX / n;        
+        do {
+            r = rand() / bucket_size;
+            if (n == 0) {
+                r = 0;
+                return r;
+            }
+        }    
+        while (r >= n);
+    }
+    else {
+        bucket_size = 2147483647 / n;
+        const int multn = 2147483647 / RAND_MAX;
+        do {
+            randmulti = rand() / (RAND_MAX / multn);
+            r = (rand() * randmulti) / bucket_size;
+        }
+        while (r >= n);
+    }
 
     return r;
 }
@@ -78,9 +93,8 @@ void gen_aux2(const Grammar& g, const string& word, vector<string>& ret, vector<
         rulelst.push_back(*it);
 
         const Rule_collection& c = it->second;        
-        Rule_collection::const_iterator it2 = c.begin();
-        advance(it, nrand(c.size()));
-        const Rule& r = *it2;  
+        
+        const Rule& r = c[nrand(c.size())];
         
         for (Rule::const_iterator i = r.begin(); i != r.end(); ++i) {            
             gen_aux(g, *i, ret, rulelst);
@@ -101,10 +115,9 @@ void gen_aux(const Grammar& g, const string& word, vector<string>& ret, vector<p
 
         rulelst.push_back(*it);        
        
-        const Rule_collection& c = it->second;        
-        Rule_collection::const_iterator it2 = c.begin();
-        advance(it, nrand(c.size()));
-        const Rule& r = *it2;  
+        const Rule_collection& c = it->second;
+
+        const Rule& r = c[nrand(c.size())];
         
         for (Rule::const_iterator i = r.begin(); i != r.end(); ++i) {            
             gen_aux2(g, *i, ret, rulelst);
@@ -115,7 +128,7 @@ void gen_aux(const Grammar& g, const string& word, vector<string>& ret, vector<p
 vector<string> gen_sentence(const Grammar& g)
 {    
     vector<string> ret;
-    vector<pair<const std::string, Rule_collection> > rulelst;
+    vector<pair<const string, Rule_collection> > rulelst;
     gen_aux(g, "<sentence>", ret, rulelst);    
 
     return ret;
@@ -130,7 +143,7 @@ Grammar read_grammar(istream& in)
         vector<string> entry = split(line);
 
         if (!entry.empty()) {
-            ret[*entry.begin()].push_back(Rule(++entry.begin(), entry.end()));
+            ret[*entry.begin()].push_back(Rule(entry.begin() + 1, entry.end()));
         }
     }
 
