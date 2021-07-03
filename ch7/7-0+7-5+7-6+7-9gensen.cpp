@@ -68,10 +68,11 @@ int nrand(int n)
     }
     else {
         bucket_size = 2147483647 / n;
-        const int multn = 2147483647 / RAND_MAX;
+        //const int multn = 2147483647 / RAND_MAX;
         do {
-            randmulti = rand() / (RAND_MAX / multn);
-            r = (rand() * randmulti) / bucket_size;
+            //randmulti = rand() / (RAND_MAX / multn);
+            //2147483647 / RAND_MAX = 65538
+            r = (rand() * (65538)) / bucket_size;
         }
         while (r >= n);
     }
