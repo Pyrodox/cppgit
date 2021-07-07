@@ -1,0 +1,2 @@
+We can say that x must be of type map<int, string> due to functions changing containers must have matching containers.
+The call would still work the other way around.

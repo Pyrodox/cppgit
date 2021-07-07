@@ -5,9 +5,10 @@
 #include <algorithm>
 #include <cstdlib>
 #include <vector>
-using std::map; using std::cout; using std::endl; using std::rand; using std::string;
-using std::iterator; using std::istream; using std::logic_error; using std::pair;
-using std::cin; using std::domain_error; using std::advance; using std::vector;
+#include <list>
+using std::map; using std::cout; using std::endl; using std::rand; using std::string; using std::back_inserter;
+using std::iterator; using std::istream; using std::logic_error; using std::pair; using std::list;
+using std::cin; using std::domain_error; using std::advance; using std::vector; using std::ostream_iterator;
 
 typedef vector<string> Rule;
 typedef vector<Rule> Rule_collection;
@@ -81,29 +82,6 @@ int nrand(int n)
     return r;
 }
 
-void gen_aux2(const Grammar& g, const string& word, vector<string>& ret, vector<pair<const string, Rule_collection> >& rulelst)
-{    
-    if (!bracketed(word)) {        
-        ret.push_back(word);    
-    }
-    else {        
-        Grammar::const_iterator it = g.find(word);        
-        if (it == g.end()) {         
-            throw logic_error("empty rule");
-        }        
-
-        rulelst.push_back(*it);
-
-        const Rule_collection& c = it->second;        
-        
-        const Rule& r = c[nrand(c.size())];
-        
-        for (Rule::const_iterator i = r.begin(); i != r.end(); ++i) {            
-            gen_aux(g, *i, ret, rulelst);
-        }    
-    }
-}
-
 void gen_aux(const Grammar& g, const string& word, vector<string>& ret, vector<pair<const string, Rule_collection> >& rulelst)
 {    
     if (!bracketed(word)) {        
@@ -122,8 +100,8 @@ void gen_aux(const Grammar& g, const string& word, vector<string>& ret, vector<p
         const Rule& r = c[nrand(c.size())];
         
         for (Rule::const_iterator i = r.begin(); i != r.end(); ++i) {            
-            gen_aux2(g, *i, ret, rulelst);
-        }    
+            gen_aux(g, *i, ret, rulelst);
+        }
     }
 }
 
@@ -132,6 +110,7 @@ vector<string> gen_sentence(const Grammar& g)
     vector<string> ret;
     vector<pair<const string, Rule_collection> > rulelst;
     gen_aux(g, "<sentence>", ret, rulelst);    
+    copy(ret.begin(), ret.end(), ostream_iterator<string>(cout, " "));
 
     return ret;
 }
@@ -154,18 +133,9 @@ Grammar read_grammar(istream& in)
 
 int main()
 {    
-    vector<string> sentence = gen_sentence(read_grammar(cin));    
-        
-    vector<string>::const_iterator it = sentence.begin();   
-    if (!sentence.empty()) {
-        cout << *it;        
-        ++it;    
-    }    
-         
-    while (it != sentence.end()) {        
-        cout << " " << *it;        
-        ++it;    
-    }    
+    vector<string> sentence = gen_sentence(read_grammar(cin));
+    list<string> sentencelst;
+    copy(sentence.begin(), sentence.end(), back_inserter(sentencelst));
     
     cout << endl;    
     

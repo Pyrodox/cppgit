@@ -1,0 +1,5 @@
+It might actually be possible to pass the beginning iterator and the end iterator to the median function.
+However, it might be slower since I think a container would have to be made to sort the values if they weren't sorted beforehand.
+Additionally, random access would still need a container unless we were iterating through a container, but iterating through a whole
+container isn't necessary at all. My hypothesis is that the function would be slower due to the reasons above.
+However, this is purely theoretical.

@@ -45,9 +45,9 @@ double optimistic_median(const Student_info& s)
 }
 //6-5 easy
 //6-6 done as well
-double analysis(const vector<Student_info>& students, double func(const Student_info&))
+template<class D, class V, class S>D analysis(const V& students, D func(const S&))
 {
-    vector<double> grades;
+    vector<D> grades;
     transform(students.begin(), students.end(), back_inserter(grades), func);
 
     return median(grades);

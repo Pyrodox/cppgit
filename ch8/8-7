@@ -1,0 +1,3 @@
+The max function doesn't use two template paramteters since max needs to return a single value, and since it returns
+either one of the parameters given based on which one is larger, the two types should be the same to avoid errors, since, again,
+max is returning a single type.
