@@ -1,0 +1,5 @@
+I'd put read_hw under the private section of the Student_info class as 
+    std::istream& read_hw(std::istream&, std::vector<double>&);
+, and I'd also have to add
+    Student_info::
+in front of the original function's name.

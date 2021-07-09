@@ -1,0 +1,1 @@
+The compare function must change since it compares const Student_info objects' names.
