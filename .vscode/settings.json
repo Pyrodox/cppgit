@@ -52,7 +52,8 @@
         "list": "cpp",
         "chrono": "cpp",
         "ratio": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "cstring": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled"
 }
