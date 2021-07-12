@@ -16,7 +16,7 @@ char* duplicate_chars(const char* p)
 }
 
 int* pointer_to_static()
-{    
+{
     static int x;
 
     return &x;

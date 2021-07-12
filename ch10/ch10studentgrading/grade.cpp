@@ -17,7 +17,7 @@ double grade(double midterm, double final, vector<double> homework)
         throw domain_error("student has done no homework");
     }
 
-    double median1 = 0.2 * midterm + 0.4 * final + 0.4 * median(homework, homework.begin());
+    double median1 = 0.2 * midterm + 0.4 * final + 0.4 * median(2.1, homework.size(), homework, homework.begin());
 
     return median1;
 }
