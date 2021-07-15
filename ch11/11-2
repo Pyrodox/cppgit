@@ -1,0 +1,2 @@
+The constructor should be defined for classes to initialize objects and is not part of the rule of three, so we can define a constructor 
+without defining the assignment operator, the destructor, and the copy controller.

@@ -1,0 +1,1 @@
+The class that we defined in chapter 9 was not a template class and was merely a type. The Student_info class apparently doesn't manage any resources. 
