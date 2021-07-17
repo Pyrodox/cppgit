@@ -1,7 +1,8 @@
 #include <iostream>
 #include <memory>
 #include <algorithm>
-using std::cout; using std::allocator; using std::max; using std::uninitialized_fill; using std::uninitialized_copy;
+using std::cout; using std::allocator; using std::max; using std::uninitialized_fill;
+using std::uninitialized_copy; using std::back_inserter; using std::copy;
 
 template <class T> class alloc
 {
@@ -36,31 +37,21 @@ template <class T> class Vec
             }
             unchecked_append(t);
         }
-
-        void clear() {
-            uncreate();
-        }
-
-        iterator erase(iterator p) {
-            iterator newp = p;
-            alloc.destroy(p);
-            alloc.deallocate(p, 1);
-            p = 0;
-
-            return ++newp;
-        }
-
-        iterator erase(iterator b, iterator e) {
-            auto val = e - b;
-            while (e != b) {            
-                alloc.destroy(--e);
-                e = 0;      
+        //alt ver.
+        /*iterator erase(iterator p) {
+            for (iterator it = p; it != avail - 1; ++it) {
+                ++p;
+                *it = *p;
             }
 
-            alloc.deallocate(b, val);
+            create(data, avail - 1);
 
-            return e;
-        }
+            return p;
+        }*/
+        iterator erase(iterator p) { return erase_aux(p, p + 1); }
+        iterator erase(iterator p, iterator p2) { return erase_aux(p, p2); }
+
+        void clear() { uncreate(); }
 
         size_type size() const { return avail - data; }
 
@@ -69,6 +60,7 @@ template <class T> class Vec
     
         iterator end() { return avail; }    
         const_iterator end() const { return avail; }
+
     private:    
         iterator data;    
         iterator avail;   
@@ -84,6 +76,8 @@ template <class T> class Vec
 
         void grow();    
         void unchecked_append(const T&);
+
+        T* erase_aux(iterator, iterator);
 };
 
 template <class T> void Vec<T>::create()
@@ -147,14 +141,34 @@ template <class T> void Vec<T>::unchecked_append(const T& val)
     alloc.construct(avail++, val);
 }
 
+template <class T> T* Vec<T>::erase_aux(iterator p1, iterator p2)
+{
+    size_type newsize = size() - 1;
+
+    iterator new_data = alloc.allocate(newsize);
+    iterator newend = uninitialized_copy(p2, end(), new_data);
+
+    create(data, p1);
+            
+    for (; new_data != newend; ++new_data) {
+        push_back(*new_data);
+    }
+
+    return p2;
+}
+
 int main()
 {
-    Vec<int> a(10);
+    Vec<int> a(5);
     a[0] = 1;
-    for (int i = 0; i < a.size(); ++i) {
-        cout << a[i] << "\n";
+    auto b = 2;
+    for (auto i = a.begin(); i != a.end(); ++i) {
+        *i = b;
+        cout << *i << "\n";
+        b++;
     }
-    a.erase(a.begin()+2, a.end());
+    cout << "\n";
+    cout << *a.erase(a.begin() + 1) << "\n";
     for (int i = 0; i < a.size(); ++i) {
         cout << a[i] << "\n";
     }
