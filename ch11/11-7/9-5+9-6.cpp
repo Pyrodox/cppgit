@@ -17,17 +17,18 @@ bool isfail(const Student_info& examinee)
     return examinee.finalgrade < 60;
 }
 
-template <class T> typename Vec<T>::iterator remove_if(typename Vec<T>::iterator p1, typename Vec<T>::iterator p2, bool pred)
+template <class T> typename Vec<T>::iterator remove_if2(T* p1, T* p2, bool pred)
 {
+    typename Vec<T>::iterator temp = p1;
     while (p1 != p2) {
-        if (isfail(p1++)) {
-            //do stuff
-            p1 = erase(p1);
+        if (!isfail(*p1)) {
+            *temp = *p1;
+            ++temp;
         }
-        
+        ++p1;
     }
 
-    return p1;
+    return temp;
 }
 
 int main()
@@ -44,8 +45,8 @@ int main()
     sort(students.begin(), students.end(), compare);
     Vec<Student_info> fail;
     copy_if(students.begin(), students.end(), back_inserter(fail), isfail);
-    students.erase(remove_if(students.begin(), students.end(), isfail), students.end());
-    
+    students.erase(remove_if2(students.begin(), students.end(), isfail), students.end());
+    cout << "why\n";
     cout << "Passing:\n";
     for (Vec<Student_info>::const_iterator it = students.begin(); it != students.end(); ++it) {
         cout << it->name() << string(maxlen + 1 - it->name().size(), ' ');

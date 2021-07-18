@@ -1,8 +1,8 @@
 #include "Student_info.h"
 #include "grade.h"
+#include "vec.h"
 
 using std::istream;  
-using std::vector;
 
 bool compare(const Student_info& x, const Student_info& y)
 {    
@@ -18,7 +18,7 @@ istream& Student_info::read(istream& in)
     return in;
 }
 
-istream& read_hw(istream& in, vector<double>& hw)
+istream& read_hw(istream& in, Vec<double>& hw)
 {    if (in) {
         hw.clear();
 

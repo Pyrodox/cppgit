@@ -3,13 +3,13 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
+#include "vec.h"
 
 class Student_info {
     public:
         Student_info();
         Student_info(std::istream&);
-        bool valid() const { return !homework.empty(); }
+        //bool valid() { return !homework.empty(); }
         std::istream& read(std::istream&);
         std::string name() const { return n; }
         double grade() const;
@@ -18,11 +18,11 @@ class Student_info {
     private:    
         std::string n;    
         double midterm, final;    
-        std::vector<double> homework;                 
+        Vec<double> homework;                 
 };
 
 bool compare(const Student_info&, const Student_info&);
 std::istream& read(std::istream&);
-std::istream& read_hw(std::istream&, std::vector<double>&);
+std::istream& read_hw(std::istream&, Vec<double>&);
 
 #endif

@@ -52,6 +52,8 @@ template <class T> class Vec
         iterator erase(iterator p) { return erase_aux(p, p + 1); }
         iterator erase(iterator p, iterator p2) { return erase_aux(p, p2); }
 
+        //bool empty() { if (data = avail = limit = 0) { return true; } else { return false; } }
+
         void clear() { uncreate(); }
 
         size_type size() const { return avail - data; }

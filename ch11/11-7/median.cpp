@@ -1,11 +1,11 @@
 #include <algorithm>
 #include <stdexcept>
-#include <vector>
-using std::domain_error; using std::sort; using std::vector;
+#include "vec.h"
+using std::domain_error; using std::sort;
 
-double median(vector<double> vec)
+double median(Vec<double> vec)
 {
-    typedef vector<double>::size_type vec_sz;
+    typedef Vec<double>::size_type vec_sz;
 
     vec_sz size = vec.size();
     if (size == 0) {
