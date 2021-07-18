@@ -1,8 +1,9 @@
+#ifndef GUARD_vec
+#define GUARD_vec
+
 #include <iostream>
 #include <memory>
 #include <algorithm>
-using std::cout; using std::allocator; using std::max; using std::uninitialized_fill;
-using std::uninitialized_copy;
 
 template <class T> class alloc
 {
@@ -66,7 +67,7 @@ template <class T> class Vec
         iterator avail;   
         iterator limit;
     
-        allocator<T> alloc;
+        std::allocator<T> alloc;
      
         void create();    
         void create(size_type, const T&);    
@@ -89,13 +90,13 @@ template <class T> void Vec<T>::create(size_type n, const T& val)
 {    
     data = alloc.allocate(n);
     limit = avail = data + n;    
-    uninitialized_fill(data, limit, val);
+    std::uninitialized_fill(data, limit, val);
 }
 
 template <class T> void Vec<T>::create(const_iterator i, const_iterator j)
 {    
     data = alloc.allocate(j - i);    
-    limit = avail = uninitialized_copy(i, j, data);
+    limit = avail = std::uninitialized_copy(i, j, data);
 }
 
 template <class T> void Vec<T>::uncreate()
@@ -124,10 +125,10 @@ template <class T> Vec<T>& Vec<T>::operator=(const Vec& rhs)
 
 template <class T> void Vec<T>::grow()
 {     
-    size_type new_size = max(2 * (limit - data), ptrdiff_t(1));
+    size_type new_size = std::max(2 * (limit - data), ptrdiff_t(1));
    
     iterator new_data = alloc.allocate(new_size);    
-    iterator new_avail = uninitialized_copy(data, avail, new_data);
+    iterator new_avail = std::uninitialized_copy(data, avail, new_data);
       
     uncreate();
 
@@ -146,7 +147,7 @@ template <class T> T* Vec<T>::erase_aux(iterator p1, iterator p2)
     size_type newsize = size() - 1;
 
     iterator new_data = alloc.allocate(newsize);
-    iterator newend = uninitialized_copy(p2, end(), new_data);
+    iterator newend = std::uninitialized_copy(p2, end(), new_data);
 
     create(data, p1);
             
@@ -157,21 +158,4 @@ template <class T> T* Vec<T>::erase_aux(iterator p1, iterator p2)
     return p2;
 }
 
-int main()
-{
-    Vec<int> a(5);
-    a[0] = 1;
-    auto b = 2;
-    for (auto i = a.begin(); i != a.end(); ++i) {
-        *i = b;
-        cout << *i << "\n";
-        b++;
-    }
-    cout << "\n";
-    cout << *a.erase(a.begin() + 1) << "\n";
-    for (int i = 0; i < a.size(); ++i) {
-        cout << a[i] << "\n";
-    }
-
-    return 0;
-}
+#endif
